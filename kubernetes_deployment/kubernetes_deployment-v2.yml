@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: customer-portal-webserver
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      env: prod
+      product: customer-portal
+  template:
+    metadata:
+      name: customer-portal-webserver
+      labels:
+        env: prod
+        product: customer-portal
+        app: apache
+    spec:
+      containers:
+      - image: httpd
+        name: apache
+      nodeSelector:
+        env: prod
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: customer-portal-webserver
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector: 
+    env: prod
+    product: customer-portal
